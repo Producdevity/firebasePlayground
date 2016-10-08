@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Welcome to Firebase Hosting</title>
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
+    <!-- AngularFire -->
+    <script src="https://cdn.firebase.com/libs/angularfire/2.0.2/angularfire.min.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyCBElWWWX7DNVD8QH6_ewsoTbjpQFBWRyg",
+        authDomain: "test-project-a28be.firebaseapp.com",
+        databaseURL: "https://test-project-a28be.firebaseio.com",
+        storageBucket: "test-project-a28be.appspot.com",
+        messagingSenderId: "127267559157"
+      };
+      firebase.initializeApp(config);
+
+      var app = angular.module("app", ["firebase"]);
+
+      app.controller("MainController", function($scope, $firebaseArray, $firebaseAuth){
+        var auth = $firebaseAuth();
+        $scope.messages = $firebaseArray(firebase.database().ref("messages"));
+
+        auth.$onAuthStateChanged(function (user) {
+          console.log($scope.user)
+          $scope.user = user
+        });
+
+        $scope.send = function () {
+          $scope.messages.$add({
+            text: $scope.msg,
+            author: $scope.user.displayName
+          });
+          $scope.msg = "";
+        }
+
+
+        $scope.login = function(){
+          auth.$signInWithPopup('twitter');
+        }
+
+        $scope.logout = function(){
+          auth.$signOut();
+        }
+      });
+    </script>
+    <script>
+  // Initialize Firebase
+  // var config = {
+  //   apiKey: "AIzaSyAiX3OClCTViqwV51g7VtBWeZThtzapmGw",
+  //   authDomain: "flickering-torch-4371.firebaseapp.com",
+  //   databaseURL: "https://flickering-torch-4371.firebaseio.com",
+  //   storageBucket: "flickering-torch-4371.appspot.com",
+  //   messagingSenderId: "554697476627"
+  // };
+  // firebase.initializeApp(config);
+  //
+  // var app = angular.module("app", ["firebase"]);
+  //
+  // app.controller("MainController", function ($scope, $firebaseArray, $firebaseAuth) {
+  //   var auth = $firebaseAuth();
+  //   $scope.messages = $firebaseArray(firebase.database().ref("messages"));
+  //
+  //   auth.$onAuthStateChanged(function (user) {
+  //     console.log($scope.user)
+  //     $scope.user = user
+  //   });
+  //
+  //   $scope.send = function () {
+  //     $scope.messages.$add({
+  //       text: $scope.msg,
+  //       author: $scope.user.displayName
+  //     });
+  //     $scope.msg = "";
+  //   }
+  //
+  //   $scope.login = function () {
+  //     auth.$signInWithPopup("twitter");
+  //   }
+  //
+  //   $scope.logout = function () {
+  //     auth.$signOut();
+  //   }
+  // });
+
+</script>
+    <style media="screen">
+      body {
+        font-family: Roboto, Arial, sans-serif;
+        background: #ECEFF1;
+        color: rgba(0,0,0,0.87);
+      }
+
+      a {
+        color: rgb(3,155,229);
+      }
+
+      #message {
+        max-width: 400px;
+        margin: 40px auto;
+        box-shadow: 0 1px 3px 0 rgba(0,0,0,0.2),0 1px 1px 0 rgba(0,0,0,0.14),0 2px 1px -1px rgba(0,0,0,0.12);
+        border-radius: 2px;
+        background: white;
+        padding: 16px 24px;
+      }
+
+      #message h1 {
+        font-size: 22px;
+        font-weight: 500;
+        text-align: center;
+        margin: 0 0 16px;
+      }
+
+      #message p {
+        font-weight: 300;
+        line-height: 150%;
+      }
+
+      #message ul {
+        list-style: none;
+        margin: 16px 0 0;
+        padding: 0;
+        text-align: center;
+      }
+
+      #message li a {
+        display: inline-block;
+        padding: 8px;
+        text-transform: uppercase;
+        text-decoration: none;
+        font-weight: 500;
+        background: rgb(3,155,229);
+        color: white;
+        border: 1px solid rgb(3,155,229);
+        border-radius: 3px;
+        font-size: 14px;
+        box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
+      }
+    </style>
+  </head>
+  <body ng-app="app" ng-controller="MainController">
+    <button ng-click="login()" ng-show="!user">Login?</button>
+    <button ng-click="logout()" ng-show="user">Logout?</button>
+    <div ng-repeat="message in messages">
+      {{message.text}} <b>-{{message.author}}</b>
+    </div>
+    <div ng-show="user">
+      <input type="text" ng-model="msg" />
+      <button ng-click="send()">Submit</button>
+    </div>
+  </body>
+</html>
